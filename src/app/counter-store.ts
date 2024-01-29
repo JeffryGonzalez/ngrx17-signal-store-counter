@@ -9,7 +9,7 @@ import {
     withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { distinctUntilChanged, from, pipe, switchMap } from 'rxjs';
+import { distinctUntilChanged, from, pipe, switchMap, tap } from 'rxjs';
 import { CounterService } from './counter.service';
 export type CountByValues = 1 | 3 | 5;
 export type CounterState = { count: number; by: CountByValues };
@@ -32,6 +32,7 @@ export const CounterStore = signalStore(
     },
     save: rxMethod<CounterState>(
       pipe(
+        tap((state:CounterState) => console.log('saving', state)),
         distinctUntilChanged(),
         takeUntilDestroyed(),
         switchMap((state:CounterState) => from(service.saveCounter(state)))
